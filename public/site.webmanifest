@@ -1,0 +1,8 @@
+{
+    "display": "standalone",
+    "name": "Studdy",
+    "short_name": "Studdy",
+    "start_url": "/",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff"
+}
