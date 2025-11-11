@@ -19,35 +19,35 @@ function EditTodoPage() {
   // 4. 【關鍵修改】處理編輯邏輯：更新 localStorage 中的 todos 列表
   const handleEditTodo = (formData) => {
     // 把從 URL 來的 id (字串) 轉成數字，和表單資料組合起來
-    const updatedTodo = { 
-      id: parseInt(todoId), 
+    const updatedTodo = {
+      id: parseInt(todoId),
       ...formData,
       // 同樣，確保 courseId 是數字或 null
       courseId: formData.courseId ? parseInt(formData.courseId) : null,
     };
-    
+
     // 使用 setTodos 來更新 localStorage
     setTodos(currentTodos => {
       // 確保 currentTodos 是個陣列
       const safeCurrentTodos = Array.isArray(currentTodos) ? currentTodos : [];
       // 用 .map 遍歷整個陣列，找到 ID 相同的那一項，用我們的 updatedTodo 替換它
       // 其他項則保持原樣
-      return safeCurrentTodos.map(todo => 
+      return safeCurrentTodos.map(todo =>
         todo.id == todoId ? updatedTodo : todo
       );
     });
-    
-    alert('編輯成功！');
+
+    // alert('編輯成功！');
     // navigate('/'); 這行已經在 TodoForm 裡了，會自動跳轉
   };
-  
+
   // 如果找不到對應的 todo (例如使用者手動輸入錯誤的 URL)，就顯示提示
   if (!todoToEdit) {
     return (
-        <div className="text-center text-gray-500 mt-10">
-            <p>正在載入待辦事項...</p>
-            <p>如果長時間沒有反應，可能是該項目已被刪除。</p>
-        </div>
+      <div className="text-center text-gray-500 mt-10">
+        <p>正在載入待辦事項...</p>
+        <p>如果長時間沒有反應，可能是該項目已被刪除。</p>
+      </div>
     );
   }
 
