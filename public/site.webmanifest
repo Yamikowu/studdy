@@ -4,5 +4,12 @@
     "short_name": "STUDDY",
     "start_url": "/",
     "background_color": "#ffffff",
-    "theme_color": "#ffffff"
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/todo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
 }
