@@ -129,6 +129,7 @@ export default function FullTimelinePage() {
     // 最後再過濾一次，移除空的 group (通常是錨點被 group 取代後留下的)
     return finalSegments.filter(seg => !(seg.type === 'group' && seg.todos.length === 0));
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dayTodos, selectedDate]);
 
   const categoryStyles = {
