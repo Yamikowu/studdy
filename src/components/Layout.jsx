@@ -35,7 +35,7 @@ function Layout() {
           className="text-xl font-bold text-slate-800 hover:text-red-500 active:text-red-700 transition-colors"
           title="點擊以重置所有 App 資料" // 滑鼠移上去時會顯示提示
         >
-          StuddY
+          STUDDY
         </button>
       </header>
 
@@ -60,10 +60,10 @@ function Layout() {
         // Footer 的整體高度將由內部的 NavLink 決定
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
+        <CustomNavLink to="/courses" label="Class" />
         <CustomNavLink to="/" label="To-do" />
         <CustomNavLink to="/timeline" label="Time" />
         <CustomNavLink to="/focus" label="Focus" />
-        <CustomNavLink to="/courses" label="Class" />
       </footer>
 
     </div>
