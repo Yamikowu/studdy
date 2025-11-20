@@ -178,7 +178,8 @@ export default function FullTimelinePage() {
             // 【關鍵修改】：在這裡加入判斷邏輯
             const hourToShow = segment.type === 'anchor'
               ? (segment.displayHour ?? segment.startTime.getHours()) // 如果是錨點，顯示它自己的時間
-              : segment.startTime.getHours() + 1; // 如果是空白，顯示下一個小時
+              // gap: 如果目前起點不是整點就進位，整點則顯示當前小時
+              : (segment.startTime.getMinutes() > 0 ? segment.startTime.getHours() + 1 : segment.startTime.getHours());
 
             // 使用 % 24 來確保 23 + 1 = 24 會顯示成 00:00
             const formattedHour = (hourToShow % 24).toString().padStart(2, '0');

@@ -24,17 +24,17 @@ function FloatingInputModal({ isVisible, title, onSubmit, onCancel }) {
 
   return (
     // 最外層是半透明背景
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       onClick={onCancel} // 點擊背景也會觸發取消
     >
       {/* 這是 Modal 的主體，用 onClick={e => e.stopPropagation()} 来防止點擊它時觸發背景的 onCancel */}
-      <div 
+      <div
         className="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm"
         onClick={e => e.stopPropagation()}
       >
         <h3 className="text-lg font-bold mb-4">{title}</h3>
-        
+
         <input
           type="text"
           value={inputValue}

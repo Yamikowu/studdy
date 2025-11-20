@@ -13,9 +13,10 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
     courseId: existingTodo?.courseId || '',
     category: existingTodo?.category || 'none',
     time: existingTodo?.time || '',
+    duration: existingTodo?.duration || '', // <-- 新增 duration，單位是分鐘
     subtasks: existingTodo?.subtasks || [],
   });
-  
+
   const [newSubtaskText, setNewSubtaskText] = useState('');
 
   // 這個 useEffect 非常重要，它確保了當我們從「新增模式」切換到「編輯模式」時，
@@ -28,6 +29,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         courseId: existingTodo.courseId || '',
         category: existingTodo.category || 'none',
         time: existingTodo.time || '',
+        duration: existingTodo.duration || '',
         subtasks: existingTodo.subtasks || [],
       });
     }
@@ -67,7 +69,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="p-4 border-2 border-dotted border-blue-400 rounded-lg">
         <label htmlFor="title" className="block text-lg font-bold text-blue-700 mb-2">待辦名稱</label>
-        <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} className="w-full p-2 border-b-2 border-gray-200 focus:border-blue-500 outline-none" placeholder="Ex: 報告"/>
+        <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} className="w-full p-2 border-b-2 border-gray-200 focus:border-blue-500 outline-none" placeholder="Ex: 報告" />
       </div>
       <div className="p-4 border-2 border-dotted border-blue-400 rounded-lg space-y-4">
         <div>
@@ -87,7 +89,19 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         </div>
         <div>
           <label htmlFor="time" className="block text-md font-semibold text-gray-700 mb-2">時間 (可選)</label>
-          <input type="datetime-local" id="time" name="time" value={formData.time} onChange={handleChange} className=" p-2 border border-gray-200 rounded-md shadow-sm"/>
+          <input type="datetime-local" id="time" name="time" value={formData.time} onChange={handleChange} className=" p-2 border border-gray-200 rounded-md shadow-sm" />
+        </div>
+        <div>
+          <label htmlFor="duration" className="block text-md font-semibold text-gray-700 mb-1">持續時間 (分鐘, 可選)</label>
+          <input
+            type="number" // 類型設為 number，方便輸入數字
+            id="duration"
+            name="duration"
+            value={formData.duration}
+            onChange={handleChange}
+            placeholder="例如: 60"
+            className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+          />
         </div>
       </div>
       <div className="p-4 border-2 border-dotted border-blue-400 rounded-lg">
@@ -95,14 +109,14 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         <ul className="space-y-2 mb-3">
           {(formData.subtasks || []).map(task => (
             <li key={task.id} className="flex items-center group">
-              <input type="checkbox" checked={task.completed} onChange={() => handleSubtaskToggle(task.id)} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"/>
+              <input type="checkbox" checked={task.completed} onChange={() => handleSubtaskToggle(task.id)} className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
               <span className={`ml-3 flex-grow ${task.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>{task.text}</span>
               <button type="button" onClick={() => handleDeleteSubtask(task.id)} className="ml-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">&#x2715;</button>
             </li>
           ))}
         </ul>
         <div className="flex space-x-2">
-          <input type="text" value={newSubtaskText} onChange={(e) => setNewSubtaskText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSubtask(); } }} placeholder="新增子任務..." className="flex-grow w-full p-2 border border-gray-300 rounded-md shadow-sm"/>
+          <input type="text" value={newSubtaskText} onChange={(e) => setNewSubtaskText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSubtask(); } }} placeholder="新增子任務..." className="flex-grow w-full p-2 border border-gray-300 rounded-md shadow-sm" />
           <button type="button" onClick={handleAddSubtask} className="px-4 py-2 bg-slate-300 text-gray-700 rounded-md hover:bg-gray-300">＋</button>
         </div>
       </div>

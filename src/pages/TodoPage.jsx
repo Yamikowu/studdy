@@ -3,19 +3,10 @@
 
 import { Link, UNSAFE_getTurboStreamSingleFetchDataStrategy } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
-
-
-const dummyTodos = [
-  { id: 1, title: '完成作業系統 Ch3 複習', category: 'hw', courseId: 1 },
-  { id: 2, title: '演算法作業 p.125', category: 'hw', courseId: 3 },
-  { id: 3, title: 'Quiz 2 - 網路概論', category: 'quiz', courseId: 1 },
-  { id: 4, title: '準備計算機概論小考', category: 'quiz', courseId: 2 },
-  { id: 5, title: '吃飯', category: null, time: '2025-11-20T12:00',duration: "60" },
-  
-];
+import { getDummyTodos } from '../data/dummyTodos';
 
 function TodoPage() {
-  const [todos, setTodos] = useLocalStorageState('todos', dummyTodos);
+  const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
 
   // 【關鍵修改 1】：統一分組邏輯
   const groupedTodos = (Array.isArray(todos) ? todos : []).reduce((groups, todo) => {
@@ -69,7 +60,16 @@ function TodoPage() {
                 // 原始時間格式可能是 "2025-11-12T10:30"
                 // 我們可以把它變得更易讀，例如 "11/12 10:30"
                 let formattedTime = '';
-                if (todo.time) {
+                if (todo.id === 5) {
+                  // 吃飯這筆永遠顯示當天日期，時間沿用原本設定
+                  const today = new Date();
+                  const baseTime = todo.time ? new Date(todo.time) : null;
+                  const month = today.getMonth() + 1;
+                  const day = today.getDate();
+                  const hours = baseTime ? baseTime.getHours().toString().padStart(2, '0') : '00';
+                  const minutes = baseTime ? baseTime.getMinutes().toString().padStart(2, '0') : '00';
+                  formattedTime = `${month}/${day} ${hours}:${minutes}`;
+                } else if (todo.time) {
                   const date = new Date(todo.time);
                   // 用 toLocaleString 可以得到不錯的本地化格式，但我們也可以手動組合
                   const month = date.getMonth() + 1; // getMonth() 是從 0 開始的

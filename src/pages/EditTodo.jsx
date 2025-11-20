@@ -53,7 +53,7 @@ function EditTodoPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">編輯待辦事項</h2>
+      {/* <h2 className="text-2xl font-bold mb-6">編輯待辦事項</h2> */}
       <TodoForm
         onSubmit={handleEditTodo}
         courses={courses} // 把從 localStorage 讀到的 courses 傳給表單
