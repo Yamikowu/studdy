@@ -1,12 +1,14 @@
 // src/pages/EditTodoPage.jsx
 
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import TodoForm from '../components/TodoForm';
 import { useLocalStorageState } from '../hooks/useLocalStorageState'; // 1. 引入 Hook
 
 function EditTodoPage() {
   const { todoId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 2. 直接從 localStorage 讀取 courses 和 todos 列表
   const [courses] = useLocalStorageState('courses', []);
@@ -37,8 +39,8 @@ function EditTodoPage() {
       );
     });
 
-    // alert('編輯成功！');
-    // navigate('/'); 這行已經在 TodoForm 裡了，會自動跳轉
+    const backTo = location.state?.from || '/';
+    navigate(backTo);
   };
 
   // 如果找不到對應的 todo (例如使用者手動輸入錯誤的 URL)，就顯示提示

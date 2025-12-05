@@ -2,13 +2,14 @@
 
 
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 import { getCategoryClass } from '../theme/categoryClasses';
 
 function TodoPage() {
   const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
+  const location = useLocation();
 
   // 確保初始載入/刷新時，吃飯與預設資料到位
   useEffect(() => {
@@ -96,7 +97,11 @@ function TodoPage() {
                         className="mr-4 h-5 w-5 flex-shrink-0"
                         onChange={() => handleDeleteTodo(todo.id)}
                       />
-                      <Link to={`/edit-todo/${todo.id}`} className="hover:opacity-75 flex-grow min-w-0">
+                      <Link
+                        to={`/edit-todo/${todo.id}`}
+                        state={{ from: location.pathname + location.search }}
+                        className="hover:opacity-75 flex-grow min-w-0"
+                      >
                         <div className="flex justify-between items-center w-full">
                           {/* 
                               標題部分加上 truncate，如果文字太長會顯示 ...

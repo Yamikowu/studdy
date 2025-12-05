@@ -1,7 +1,7 @@
 // src/pages/TimelinePage.jsx
 
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getWeekDays, formatDateKey, getDayName } from '../utils/dateHelpers.jsx';
 import { getDummyTodos } from '../data/dummyTodos';
@@ -16,6 +16,7 @@ const formatTime = (date) => {
 
 export default function FullTimelinePage() {
   const [todos] = useLocalStorageState('todos', getDummyTodos());
+  const location = useLocation();
   // eslint-disable-next-line no-unused-vars
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -178,6 +179,7 @@ export default function FullTimelinePage() {
                       <Link
                         key={todo.id}
                         to={`/edit-todo/${todo.id}`}
+                        state={{ from: location.pathname + location.search }}
                         className={`block p-3 rounded-lg ${styleClass} cursor-pointer hover:opacity-80`}
                       >
                         <p className="font-semibold">{todo.title}</p>

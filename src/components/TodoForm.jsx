@@ -1,13 +1,10 @@
 // src/components/TodoForm.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 // 課程列表從外部傳入，我們不再需要 dummyCourses 在這裡
 // 並且，我們直接 export default 這個函式
 export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     title: existingTodo?.title || '',
     courseId: existingTodo?.courseId || '',
@@ -62,7 +59,6 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
       return;
     }
     onSubmit(formData);
-    navigate('/');
   };
 
   return (
