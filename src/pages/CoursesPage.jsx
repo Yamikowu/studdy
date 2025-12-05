@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import FloatingInputModal from '../components/FloatingInputModal';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getDummyCourses } from '../data/dummyCourses';
+import { getCategoryClass } from '../theme/categoryClasses';
 
 
 
@@ -15,16 +16,6 @@ function CoursesPage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // 1. 新增一個 state 來管理「刪除模式」
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-
-  // --- 定義顏色對照表 ---
-  // 我們把類別名稱映射到對應的 Tailwind CSS class
-  // 這樣不僅設定了背景色，也設定了對比度更好的文字顏色
-  const categoryStyles = {
-    quiz: 'bg-orange-100 text-orange-500',
-    hw: 'bg-blue-100 text-blue-500',
-    '未分類': 'bg-gray-200 text-gray-700',
-    'none': 'bg-gray-200 text-gray-700',
-  };
 
   const handleCourseClick = (courseId) => {
     // 在刪除模式下，點擊課程不應該觸發展開/收合
@@ -59,7 +50,7 @@ function CoursesPage() {
   };
 
   return (
-    <div className="relative h-full pb-24">
+    <div className="relative h-full pb-24" style={{ color: 'var(--text-primary)' }}>
       <ul className="space-y-4">
         {courses.map(course => {
           const courseTodos = todos.filter(todo => todo.courseId === course.id);
@@ -68,7 +59,7 @@ function CoursesPage() {
           const isExpanded = expandedCourseIds.includes(course.id);
 
           return (
-            <li key={course.id} className="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300">
+            <li key={course.id} className="surface-card overflow-hidden transition-all duration-300">
               <div className="flex items-center">
                 {/* 3. 條件渲染：只有在刪除模式下才顯示刪除按鈕 */}
                 {isDeleteMode && (
@@ -87,21 +78,24 @@ function CoursesPage() {
                   // 當在刪除模式時，讓按鈕看起來被禁用
                   className={`w-full text-left p-4 flex justify-between items-center ${isDeleteMode ? 'cursor-not-allowed' : ''}`}
                 >
-                  <span className="text-xl font-bold text-blue-600">{course.name}</span>
+                  <span className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{course.name}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-lg font-bold text-orange-500">{quizCount}</span>
-                    <span className="text-lg font-bold text-gray-600">{hwCount}</span>
+                    <span className="text-lg font-bold" style={{ color: 'var(--quiz-text)' }}>{quizCount}</span>
+                    <span className="text-lg font-bold" style={{ color: 'var(--hw-text)' }}>{hwCount}</span>
                   </div>
                 </button>
               </div>
 
               {isExpanded && !isDeleteMode && (
-                <div className="p-4 border-t-2 border-dotted border-blue-400">
+                <div
+                  className="p-4 border-t-2 border-dotted"
+                  style={{ borderColor: 'var(--panel-border)' }}
+                >
                   <ul className="space-y-2">
                     {courseTodos.map(todo => {
                       // --- 2. 查詢顏色 ---
                       // 如果 todo.category 是 null，就用 '未分類' 作為 key
-                      const styleClass = categoryStyles[todo.category || '未分類'];
+                      const styleClass = getCategoryClass(todo.category);
 
                       // 【同樣的時間格式化邏輯】
                       let formattedTime = '';
@@ -118,7 +112,7 @@ function CoursesPage() {
                         // --- 3. 應用動態 class ---
                         // 之前的 className="bg-gray-100 p-3 rounded-md"
                         // 現在用樣板字串和我們的 styleClass 來取代
-                        <li key={todo.id} className={`p-3 rounded-md ${styleClass}`}>
+                        <li key={todo.id} className={`p-3 rounded-lg ${styleClass}`}>
                           <Link
                             to="/timeline"
                             state={{ courseId: course.id }}

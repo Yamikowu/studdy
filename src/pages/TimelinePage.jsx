@@ -1,10 +1,11 @@
 // src/pages/TimelinePage.jsx
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getWeekDays, formatDateKey, getDayName } from '../utils/dateHelpers.jsx';
-import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
+import { getDummyTodos } from '../data/dummyTodos';
+import { getCategoryClass } from '../theme/categoryClasses';
 
 // 幫手函式：格式化時間為 HH:MM
 const formatTime = (date) => {
@@ -14,16 +15,10 @@ const formatTime = (date) => {
 };
 
 export default function FullTimelinePage() {
-  const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
-  const location = useLocation();
-  const selectedCourseId = location.state?.courseId ?? null;
+  const [todos] = useLocalStorageState('todos', getDummyTodos());
   // eslint-disable-next-line no-unused-vars
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-
-  useEffect(() => {
-    setTodos(current => ensureMealToday(current || getDummyTodos()));
-  }, [setTodos]);
 
   const weekDays = getWeekDays(currentDate);
 
@@ -34,11 +29,10 @@ export default function FullTimelinePage() {
       .filter(todo => {
         if (!todo.time) return false;
         const todoDayKey = formatDateKey(new Date(todo.time));
-        const matchCourse = selectedCourseId ? todo.courseId === selectedCourseId : true;
-        return todoDayKey === selectedDayKey && matchCourse;
+        return todoDayKey === selectedDayKey;
       })
       .sort((a, b) => new Date(a.time) - new Date(b.time));
-  }, [todos, selectedDate, selectedCourseId]);
+  }, [todos, selectedDate]);
 
   const timelineSegments = useMemo(() => {
     const anchorHours = [7, 12, 24];
@@ -135,21 +129,33 @@ export default function FullTimelinePage() {
     // 最後再過濾一次，移除空的 group (通常是錨點被 group 取代後留下的)
     return finalSegments.filter(seg => !(seg.type === 'group' && seg.todos.length === 0));
 
+
   }, [dayTodos, selectedDate]);
 
-  const categoryStyles = {
-    quiz: 'bg-orange-100 border-orange-300 text-orange-800',
-    hw: 'bg-blue-100 border-blue-300 text-blue-800',
-    '未分類': 'bg-gray-100 border-gray-300 text-gray-700',
-    'none': 'bg-gray-100 border-gray-300 text-gray-700',
-  };
-
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-shrink-0 flex justify-around items-center p-2 border-b-2 border-blue-400 mb-4">
+    <div className="flex flex-col h-full" style={{ color: 'var(--text-primary)' }}>
+      <div
+        className="flex-shrink-0 flex justify-around items-center p-3 mb-4 rounded-2xl"
+        style={{ backgroundColor: 'var(--panel-bg)', border: `1px solid var(--panel-border)` }}
+      >
         {weekDays.map(day => {
           const isSelected = formatDateKey(day) === formatDateKey(selectedDate);
-          return (<button key={formatDateKey(day)} onClick={() => setSelectedDate(day)} className={`flex flex-col items-center p-2 rounded-lg transition-colors ${isSelected ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'}`}> <span className="text-sm">{getDayName(day)}</span> <span className="font-bold text-lg">{day.getDate()}</span> </button>);
+          return (
+            <button
+              key={formatDateKey(day)}
+              onClick={() => setSelectedDate(day)}
+              className="flex flex-col items-center p-2 rounded-lg transition-all duration-200"
+              style={{
+                backgroundColor: isSelected ? 'var(--accent)' : 'transparent',
+                color: isSelected ? '#ffffff' : 'var(--text-primary)',
+                border: `1px solid ${isSelected ? 'var(--accent)' : 'var(--panel-border)'}`,
+                boxShadow: isSelected ? '0 10px 28px rgba(37, 99, 235, 0.25)' : 'none'
+              }}
+            >
+              <span className="text-sm">{getDayName(day)}</span>
+              <span className="font-bold text-lg">{day.getDate()}</span>
+            </button>
+          );
         })}
       </div>
 
@@ -158,15 +164,22 @@ export default function FullTimelinePage() {
           if (segment.type === 'group' && segment.todos.length > 0) {
             return (
               <div key={segment.id} className="flex mb-2">
-                <div className="flex-shrink-0 w-16 text-right pr-2 text-sm text-gray-500 pt-1">
+                <div className="flex-shrink-0 w-16 text-right pr-2 text-sm pt-1 muted-text">
                   {`${segment.startTime.getHours().toString().padStart(2, '0')}:00`}
                 </div>
-                <div className="flex-grow border-l-2 border-gray-300 pl-4 space-y-2">
+                <div
+                  className="flex-grow border-l-2 pl-4 space-y-2"
+                  style={{ borderColor: 'var(--panel-border)' }}
+                >
                   {segment.todos.map(todo => {
                     const categoryKey = todo.category || '未分類';
-                    const styleClass = categoryStyles[categoryKey];
+                    const styleClass = getCategoryClass(categoryKey);
                     return (
-                      <Link key={todo.id} to={`/edit-todo/${todo.id}`} className={`block p-3 rounded-lg border ${styleClass} cursor-pointer hover:opacity-80`}>
+                      <Link
+                        key={todo.id}
+                        to={`/edit-todo/${todo.id}`}
+                        className={`block p-3 rounded-lg ${styleClass} cursor-pointer hover:opacity-80`}
+                      >
                         <p className="font-semibold">{todo.title}</p>
                         {/* <p className="text-xs">{formatTime(new Date(todo.time))}</p> */}
                         <p className="text-xs">
@@ -192,11 +205,20 @@ export default function FullTimelinePage() {
 
             return (
               <div key={segment.id} className="flex items-center my-2">
-                <div className={`flex-shrink-0 w-16 text-right pr-2 ${segment.type === 'anchor' ? 'text-md text-gray-700 font-bold' : 'text-xs text-gray-400'}`}>
+                <div
+                  className={`flex-shrink-0 w-16 text-right pr-2 ${segment.type === 'anchor' ? 'text-base font-bold' : 'text-xs muted-text'}`}
+                  style={{ color: segment.type === 'anchor' ? 'var(--text-primary)' : 'var(--text-muted)' }}
+                >
                   {`${formattedHour}:00`}
                 </div>
-                <div className="flex-grow border-l-2 border-gray-300 pl-4">
-                  <div className={`border-t-2 ${segment.type === 'anchor' ? 'border-solid border-gray-400' : 'border-dotted border-gray-300'}`}></div>
+                <div
+                  className="flex-grow border-l-2 pl-4"
+                  style={{ borderColor: 'var(--panel-border)' }}
+                >
+                  <div
+                    className={`border-t-2 ${segment.type === 'anchor' ? 'border-solid' : 'border-dotted'}`}
+                    style={{ borderColor: 'var(--panel-border)' }}
+                  ></div>
                 </div>
               </div>
             );

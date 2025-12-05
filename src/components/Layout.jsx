@@ -1,11 +1,17 @@
 // src/components/Layout.jsx
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 import { getDummyCourses } from '../data/dummyCourses';
 
+const getThemeFromTime = () => {
+  const hour = new Date().getHours();
+  return hour >= 7 && hour < 16 ? 'light' : 'dark';
+};
+
 function Layout() {
+  const [theme, setTheme] = useState(getThemeFromTime());
 
   // --- 【關鍵新增 1】：建立重置函式 ---
   const handleResetData = () => {
@@ -42,20 +48,38 @@ function Layout() {
     }
   }, []);
 
+  useEffect(() => {
+    const syncTheme = () => {
+      const next = getThemeFromTime();
+      setTheme(prev => (prev === next ? prev : next));
+    };
+
+    syncTheme();
+    const timer = setInterval(syncTheme, 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   return (
-    <div className="max-w-[600px] mx-auto min-h-screen flex flex-col font-sans bg-slate-50">
+    <div
+      className="max-w-[600px] mx-auto min-h-screen flex flex-col font-sans"
+      style={{ backgroundColor: 'var(--app-bg)', color: 'var(--text-primary)' }}
+    >
 
       <header
-        className="relative z-10 flex-shrink-0 bg-white text-center shadow-sm"
+        className="relative z-10 flex-shrink-0 text-center shadow-sm surface-card surface-static"
         style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: '1rem', paddingLeft: '1rem', paddingRight: '1rem' }}
       >
         {/* --- 【關鍵新增 2】：重置按鈕 --- */}
         <button
           onClick={handleResetData}
-          className="text-xl font-bold text-slate-800 hover:text-red-500 active:text-red-700 transition-colors"
+          className="text-xl font-bold hover:text-red-500 active:text-red-700 transition-colors"
           title="點擊以重置所有 App 資料" // 滑鼠移上去時會顯示提示
         >
-          STUDDY
+          STUDDY · {theme === 'light' ? 'Day' : 'Night'}
         </button>
       </header>
 
@@ -75,10 +99,14 @@ function Layout() {
 
       {/* ---- 底部導覽列 ---- */}
       <footer
-        className="fixed bottom-0 left-0 right-0 max-w-[600px] w-full mx-auto z-10 flex justify-around bg-white border-t border-gray-200"
+        className="fixed bottom-0 left-0 right-0 max-w-[600px] w-full mx-auto z-10 flex justify-around border-t surface-card surface-static"
         // 關鍵修改 1：我們只在這裡處理安全區域的 padding-bottom
         // Footer 的整體高度將由內部的 NavLink 決定
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom)',
+          backgroundColor: 'var(--panel-bg)',
+          borderColor: 'var(--panel-border)'
+        }}
       >
         <CustomNavLink to="/courses" label="Class" />
         <CustomNavLink to="/" label="To-do" />
@@ -102,8 +130,13 @@ const CustomNavLink = ({ to, label }) => {
       // py-3: 【高度控制】我們給按鈕一個 12px 的上下內邊距，這決定了 footer 的高度，讓它更纖細
       className={({ isActive }) =>
         `flex-1 flex items-center justify-center py-3 text-sm transition-colors duration-200
-        ${isActive ? 'text-blue-600 font-semibold' : 'text-gray-500 hover:text-blue-500'}`
+        ${isActive ? 'font-semibold' : ''}`
       }
+      style={({ isActive }) => ({
+        color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+        backgroundColor: isActive ? 'var(--accent-soft)' : 'transparent',
+        borderTop: `2px solid ${isActive ? 'var(--accent)' : 'transparent'}`
+      })}
     >
       <span>{label}</span>
     </NavLink>

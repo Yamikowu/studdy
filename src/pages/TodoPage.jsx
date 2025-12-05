@@ -2,9 +2,10 @@
 
 
 import { useEffect } from 'react';
-import { Link, UNSAFE_getTurboStreamSingleFetchDataStrategy } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
+import { getCategoryClass } from '../theme/categoryClasses';
 
 function TodoPage() {
   const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
@@ -34,14 +35,6 @@ function TodoPage() {
     '未分類': '未分類'
   };
 
-  // --- 1. 定義顏色對照表 (和 CoursesPage 一樣) ---
-  const categoryStyles = {
-    quiz: 'bg-orange-100 text-orange-500',
-    hw: 'bg-blue-100 text-blue-500',
-    '未分類': 'bg-gray-200 text-gray-700',
-    'none': 'bg-gray-200 text-gray-700',
-  };
-
   const handleDeleteTodo = (idToDelete) => {
     setTodos(currentTodos => currentTodos.filter(todo => todo.id !== idToDelete));
   };
@@ -54,13 +47,15 @@ function TodoPage() {
       {categoryOrder.map(category => (
         groupedTodos[category].length > 0 && (
           <div key={category} className="mb-6">
-            <h2 className="text-xl font-bold text-gray-700 border-b-2 border-gray-200 pb-2 mb-3">
+            <h2
+              className="text-xl font-bold pb-2 mb-3"
+              style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--panel-border)' }}
+            >
               {categoryNames[category]}
             </h2>
             <ul>
               {groupedTodos[category].map(todo => {
-                // --- 2. 查詢顏色 ---
-                const styleClass = categoryStyles[todo.category || '未分類'];
+                const categoryClass = getCategoryClass(todo.category);
 
                 // 【可選但推薦】：格式化時間
                 // 原始時間格式可能是 "2025-11-12T10:30"
@@ -90,7 +85,7 @@ function TodoPage() {
                   // --- 3. 應用動態 class ---
                   // 之前的 className="bg-white ..."
                   // 現在加上我們的 styleClass
-                  <li key={todo.id} className={`p-4 mb-2 rounded-lg shadow-sm flex items-center justify-between ${styleClass}`}>
+                  <li key={todo.id} className={`p-4 mb-3 rounded-xl flex items-center justify-between ${categoryClass}`}>
                     {/* 
                         這個 div 是 checkbox 和 Link 的容器，
                         我們讓它佔滿除了右側按鈕之外的所有空間

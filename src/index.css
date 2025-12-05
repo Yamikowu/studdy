@@ -2,4 +2,114 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --app-bg: #f6f7fb;
+  --panel-bg: #ffffff;
+  --panel-border: #e5e7eb;
+  --text-primary: #0f172a;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-soft: #e0e7ff;
+  --shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.08);
+
+  --quiz-bg: #fff3e5;
+  --quiz-border: #ffd9b8;
+  --quiz-text: #c05621;
+
+  --hw-bg: #e8f1ff;
+  --hw-border: #c7dbff;
+  --hw-text: #1e429f;
+
+  --uncat-bg: #eef2f7;
+  --uncat-border: #d5d9e0;
+  --uncat-text: #374151;
+}
+
+[data-theme="dark"] {
+  --app-bg: #0b1221;
+  --panel-bg: #111827;
+  --panel-border: #1f2937;
+  --text-primary: #e5e7eb;
+  --text-muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-soft: #1d3a63;
+  --shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.45);
+
+  --quiz-bg: #2c1b0f;
+  --quiz-border: #f59e0b66;
+  --quiz-text: #fcd19c;
+
+  --hw-bg: #0d223f;
+  --hw-border: #60a5fa66;
+  --hw-text: #cfe2ff;
+
+  --uncat-bg: #1c2433;
+  --uncat-border: #334155;
+  --uncat-text: #cbd5e1;
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.surface-card {
+  background-color: var(--panel-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+
+.surface-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.surface-card.surface-static:hover {
+  transform: none;
+  box-shadow: var(--shadow-soft);
+}
+
+.category-card {
+  background-color: var(--panel-bg);
+  color: var(--text-primary);
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow-soft);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-1px);
+}
+
+.category-card--quiz {
+  background-color: var(--quiz-bg);
+  color: var(--quiz-text);
+  border-color: var(--quiz-border);
+  box-shadow: 0 12px 26px rgba(230, 140, 53, 0.2);
+}
+
+.category-card--hw {
+  background-color: var(--hw-bg);
+  color: var(--hw-text);
+  border-color: var(--hw-border);
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.18);
+}
+
+.category-card--uncategorized {
+  background-color: var(--uncat-bg);
+  color: var(--uncat-text);
+  border-color: var(--uncat-border);
+  box-shadow: 0 10px 22px rgba(59, 66, 82, 0.1);
+}
+
+.muted-text {
+  color: var(--text-muted);
+}
+
 @add-plugin "tailwindcss-safe-area";
