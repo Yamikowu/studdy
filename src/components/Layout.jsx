@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
+import { getDummyCourses } from '../data/dummyCourses';
 
 function Layout() {
 
@@ -28,9 +29,14 @@ function Layout() {
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem('todos');
-      const parsed = stored ? JSON.parse(stored) : getDummyTodos();
-      const normalized = ensureMealToday(parsed);
+      const parsedTodos = stored ? JSON.parse(stored) : getDummyTodos();
+      const normalized = ensureMealToday(parsedTodos);
       window.localStorage.setItem('todos', JSON.stringify(normalized));
+
+      const storedCourses = window.localStorage.getItem('courses');
+      if (!storedCourses) {
+        window.localStorage.setItem('courses', JSON.stringify(getDummyCourses()));
+      }
     } catch (error) {
       console.error('Failed to normalize todos', error);
     }

@@ -1,12 +1,18 @@
 // src/pages/TodoPage.jsx
 
 
+import { useEffect } from 'react';
 import { Link, UNSAFE_getTurboStreamSingleFetchDataStrategy } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
-import { getDummyTodos } from '../data/dummyTodos';
+import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 
 function TodoPage() {
   const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
+
+  // 確保初始載入/刷新時，吃飯與預設資料到位
+  useEffect(() => {
+    setTodos(current => ensureMealToday(current || getDummyTodos()));
+  }, [setTodos]);
 
   // 【關鍵修改 1】：統一分組邏輯
   const groupedTodos = (Array.isArray(todos) ? todos : []).reduce((groups, todo) => {

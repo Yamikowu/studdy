@@ -1,10 +1,10 @@
 // src/pages/TimelinePage.jsx
 
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getWeekDays, formatDateKey, getDayName } from '../utils/dateHelpers.jsx';
-import { getDummyTodos } from '../data/dummyTodos';
+import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 
 // 幫手函式：格式化時間為 HH:MM
 const formatTime = (date) => {
@@ -14,10 +14,16 @@ const formatTime = (date) => {
 };
 
 export default function FullTimelinePage() {
-  const [todos] = useLocalStorageState('todos', getDummyTodos());
+  const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
+  const location = useLocation();
+  const selectedCourseId = location.state?.courseId ?? null;
   // eslint-disable-next-line no-unused-vars
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  useEffect(() => {
+    setTodos(current => ensureMealToday(current || getDummyTodos()));
+  }, [setTodos]);
 
   const weekDays = getWeekDays(currentDate);
 
@@ -28,10 +34,11 @@ export default function FullTimelinePage() {
       .filter(todo => {
         if (!todo.time) return false;
         const todoDayKey = formatDateKey(new Date(todo.time));
-        return todoDayKey === selectedDayKey;
+        const matchCourse = selectedCourseId ? todo.courseId === selectedCourseId : true;
+        return todoDayKey === selectedDayKey && matchCourse;
       })
       .sort((a, b) => new Date(a.time) - new Date(b.time));
-  }, [todos, selectedDate]);
+  }, [todos, selectedDate, selectedCourseId]);
 
   const timelineSegments = useMemo(() => {
     const anchorHours = [7, 12, 24];
@@ -128,7 +135,6 @@ export default function FullTimelinePage() {
     // 最後再過濾一次，移除空的 group (通常是錨點被 group 取代後留下的)
     return finalSegments.filter(seg => !(seg.type === 'group' && seg.todos.length === 0));
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dayTodos, selectedDate]);
 
   const categoryStyles = {

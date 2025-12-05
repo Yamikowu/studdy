@@ -4,18 +4,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FloatingInputModal from '../components/FloatingInputModal';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
-
-// ... (initialCourses 和 initialTodos 資料保持不變)
-const initialCourses = [
-  { id: 1, name: '作業系統' },
-  { id: 2, name: '計算機概論' },
-  { id: 3, name: '大數據模型' },
-];
+import { getDummyCourses } from '../data/dummyCourses';
 
 
 
 function CoursesPage() {
-  const [courses, setCourses] = useLocalStorageState('courses', initialCourses);
+  const [courses, setCourses] = useLocalStorageState('courses', getDummyCourses());
   const [todos] = useLocalStorageState('todos', []);
   const [expandedCourseIds, setExpandedCourseIds] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -125,7 +119,11 @@ function CoursesPage() {
                         // 之前的 className="bg-gray-100 p-3 rounded-md"
                         // 現在用樣板字串和我們的 styleClass 來取代
                         <li key={todo.id} className={`p-3 rounded-md ${styleClass}`}>
-                          <Link to={`/edit-todo/${todo.id}`} className="block w-full">
+                          <Link
+                            to="/timeline"
+                            state={{ courseId: course.id }}
+                            className="block w-full"
+                          >
                             <div className="flex justify-between items-center">
                               <span className="font-medium truncate">{todo.title}</span>
                               {/* 只有在時間存在時才顯示 */}
