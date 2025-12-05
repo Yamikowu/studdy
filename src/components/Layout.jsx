@@ -1,7 +1,8 @@
 // src/components/Layout.jsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
+import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 
 function Layout() {
 
@@ -20,7 +21,20 @@ function Layout() {
       // 重新載入整個應用程式，來讀取初始的假資料
       window.location.reload();
     }
+    
+    
   };
+  // 確保「吃飯」每日自動回到今天（不管先進哪一頁）
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem('todos');
+      const parsed = stored ? JSON.parse(stored) : getDummyTodos();
+      const normalized = ensureMealToday(parsed);
+      window.localStorage.setItem('todos', JSON.stringify(normalized));
+    } catch (error) {
+      console.error('Failed to normalize todos', error);
+    }
+  }, []);
 
   return (
     <div className="max-w-[600px] mx-auto min-h-screen flex flex-col font-sans bg-slate-50">

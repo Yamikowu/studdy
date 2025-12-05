@@ -67,8 +67,7 @@ export default function FullTimelinePage() {
 
     allItems.forEach((item, index) => {
       const startTime = new Date(item.time);
-      // const endTime = item.type === 'anchor' ? startTime : new Date(startTime.getTime() + 60 * 60 * 1000);
-      const durationInMinutes = todos.duration || 60;
+      const durationInMinutes = item.type === 'anchor' ? 0 : (Number(item.duration) || 60);
       const endTime = new Date(startTime.getTime() + durationInMinutes * 60 * 1000);
 
       if (lastEndTime && startTime > lastEndTime) {
