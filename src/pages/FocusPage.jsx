@@ -117,7 +117,20 @@ function FocusPage() {
   }
 
   return (
-    <div className="relative w-auto -mx-6 h-[calc(100vh-130px)] overflow-hidden bg-gray-900 shadow-inner">
+    <div
+      className="relative w-full min-h-[480px] h-[calc(100vh-200px)] overflow-hidden rounded-2xl shadow-xl"
+      style={{
+        background: 'linear-gradient(135deg, #d7d0c4 0%, #cfd7df 50%, #c6d9d0 100%)',
+        border: '1px solid var(--panel-border)'
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-10 -top-10 w-56 h-56 bg-white/40 blur-3xl rounded-full"></div>
+        <div
+          className="absolute right-[-40px] bottom-[-60px] w-64 h-64 blur-3xl rounded-full"
+          style={{ backgroundColor: 'rgba(184, 194, 204, 0.45)' }}
+        ></div>
+      </div>
       
       <CharacterAnimation 
         isWorking={timerMode === 'pomodoro'}
@@ -141,39 +154,39 @@ function FocusPage() {
       {/* 計時器面板 */}
       <div className="absolute bottom-6 left-6 z-10">
         <div className="
-            backdrop-blur-md bg-black/30 border border-white/20 
-            text-white p-5 rounded-2xl shadow-xl
+            backdrop-blur-xl bg-white/60 border border-white/50 
+            text-slate-800 p-5 rounded-2xl shadow-lg
             flex flex-col items-start min-w-[180px]
-            transition-all duration-300 hover:bg-black/40
+            transition-all duration-300 hover:bg-white/70
         ">
           
           <div className="flex items-center space-x-2 mb-1">
-            <div className={`w-2 h-2 rounded-full ${isRunning ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'}`}></div>
-            <h3 className="text-xs font-bold tracking-widest text-gray-300 uppercase">
+            <div className={`w-2 h-2 rounded-full ${isRunning ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></div>
+            <h3 className="text-xs font-bold tracking-widest text-slate-600 uppercase">
               {getModeTitle()}
             </h3>
           </div>
 
-          <div className="text-6xl font-mono font-bold tracking-tighter text-white drop-shadow-lg mb-2">
+          <div className="text-6xl font-mono font-bold tracking-tighter text-slate-900 drop-shadow-sm mb-2">
             {displayTime}
           </div>
 
           <div className="w-full flex flex-col mt-1">
              <div className="flex items-center justify-between mb-3">
-               <div className="text-xs text-gray-400 font-mono">
-                 ROUND: <span className="text-white">{pomodoroCount}</span>
+               <div className="text-xs text-slate-500 font-mono">
+                 ROUND: <span className="text-slate-900">{pomodoroCount}</span>
                </div>
                
                {/* 音量控制 */}
                <div className="flex items-center space-x-2 group">
-                 <span className="text-xs text-gray-400">VOL</span>
+                 <span className="text-xs text-slate-500">VOL</span>
                  <input 
                    type="range" 
                    min="0" 
                    max="100" 
                    value={volume} 
                    onChange={(e) => setVolume(Number(e.target.value))}
-                   className="w-16 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-white"
+                   className="w-16 h-1 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-[#7a90a4]"
                  />
                </div>
             </div>
@@ -184,8 +197,8 @@ function FocusPage() {
                 className={`
                   w-8 h-8 flex items-center justify-center rounded-full transition-all
                   ${isRunning 
-                    ? 'bg-white/10 hover:bg-white/20 text-white' 
-                    : 'bg-white text-black hover:bg-gray-200'}
+                    ? 'bg-slate-900/10 hover:bg-slate-900/20 text-slate-900' 
+                    : 'bg-slate-900 text-white hover:bg-slate-800'}
                 `}
               >
                 {isRunning ? <span className="font-bold text-xs">||</span> : <span className="font-bold text-xs pl-0.5">▶</span>}
@@ -193,7 +206,7 @@ function FocusPage() {
 
               <button 
                 onClick={handleReset}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900/10 hover:bg-slate-900/20 text-slate-900 transition-all"
               >
                 <span className="text-lg leading-none transform -translate-y-0.5">↺</span>
               </button>

@@ -30,16 +30,17 @@ function FloatingInputModal({ isVisible, title, onSubmit, onCancel }) {
     >
       {/* 這是 Modal 的主體，用 onClick={e => e.stopPropagation()} 来防止點擊它時觸發背景的 onCancel */}
       <div
-        className="bg-white rounded-lg shadow-xl p-6 w-11/12 max-w-sm"
+        className="rounded-lg shadow-xl p-6 w-11/12 max-w-sm surface-card"
         onClick={e => e.stopPropagation()}
       >
-        <h3 className="text-lg font-bold mb-4">{title}</h3>
+        <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text-primary)' }}>{title}</h3>
 
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="w-full border-gray-300 rounded-md shadow-sm p-2 mb-4"
+          className="w-full rounded-md shadow-sm p-2 mb-4"
+          style={{ border: `1px solid var(--panel-border)`, backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
           placeholder="請輸入課程名稱..."
           autoFocus // 讓 Modal 出現時，輸入框自動獲得焦點
         />
@@ -47,13 +48,14 @@ function FloatingInputModal({ isVisible, title, onSubmit, onCancel }) {
         <div className="flex justify-end space-x-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            className="px-4 py-2 rounded-md"
+            style={{ backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)', border: `1px solid var(--panel-border)` }}
           >
             取消
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 rounded-md fab fab-primary"
           >
             完成
           </button>

@@ -65,7 +65,7 @@ function CoursesPage() {
                 {isDeleteMode && (
                   <button
                     onClick={() => handleDeleteCourse(course.id)}
-                    className="p-4 bg-red-500 text-white hover:bg-red-600 transition-colors"
+                    className="p-4 button-danger rounded-none transition-colors"
                   >
                     {/* 刪除圖示 (垃圾桶) */}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,7 +137,7 @@ function CoursesPage() {
                   <div className="mt-4 flex justify-center">
                     <Link
                       to="/add-todo"
-                      className="w-10 h-10 rounded-full bg-green-500 text-white text-2xl flex items-center justify-center"
+                      className="w-10 h-10 rounded-full text-white text-2xl flex items-center justify-center fab fab-primary"
                     >
                       +
                     </Link>
@@ -154,11 +154,8 @@ function CoursesPage() {
         <button
           onClick={() => setIsDeleteMode(prev => !prev)}
           // 根據是否處於刪除模式，改變按鈕顏色
-          className={`
-            font-bold w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg 
-            transition-all duration-300 transform hover:scale-110
-            ${isDeleteMode ? 'bg-yellow-400 text-black' : 'bg-red-500 hover:bg-red-600 text-white'}
-          `}
+          className={`font-bold w-16 h-16 rounded-full flex items-center justify-center text-3xl fab transition-all duration-300
+            ${isDeleteMode ? 'fab-ghost' : 'fab-danger'}`}
         >
           {isDeleteMode ? 'ok' : ( // 根據模式顯示不同圖示
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +168,7 @@ function CoursesPage() {
 
         <button
           onClick={() => setIsModalVisible(true)}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center text-4xl shadow-lg transition-transform transform hover:scale-110"
+          className="font-bold w-16 h-16 rounded-full flex items-center justify-center text-4xl fab fab-primary"
         >
           +
         </button>

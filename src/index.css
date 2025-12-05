@@ -3,49 +3,67 @@
 @tailwind utilities;
 
 :root {
-  --app-bg: #f6f7fb;
-  --panel-bg: #ffffff;
-  --panel-border: #e5e7eb;
-  --text-primary: #0f172a;
-  --text-muted: #6b7280;
-  --accent: #2563eb;
-  --accent-soft: #e0e7ff;
-  --shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.08);
+  /* Morandi-inspired palette (light) */
+  --app-bg: #f2f1ed;
+  --panel-bg: #f7f5f1;
+  --panel-border: #d9d5cd;
+  --text-primary: #2f2a28;
+  --text-muted: #7a746e;
+  --accent: #7e8f8c;
+  --accent-soft: #e2e6e3;
+  --shadow-soft: 0 12px 28px rgba(47, 42, 40, 0.1);
 
-  --quiz-bg: #fff3e5;
-  --quiz-border: #ffd9b8;
-  --quiz-text: #c05621;
+  --cta-strong: #6f857c;
+  --cta-bg: #859a92;
+  --cta-text: #f7f5f1;
 
-  --hw-bg: #e8f1ff;
-  --hw-border: #c7dbff;
-  --hw-text: #1e429f;
+  --danger-strong: #b2746d;
+  --danger-bg: #c0867d;
+  --danger-text: #fff9f5;
 
-  --uncat-bg: #eef2f7;
-  --uncat-border: #d5d9e0;
-  --uncat-text: #374151;
+  --quiz-bg: #f3e7dc;
+  --quiz-border: #e2c9b4;
+  --quiz-text: #b07952;
+
+  --hw-bg: #e1e7ef;
+  --hw-border: #c6d0dd;
+  --hw-text: #5b738c;
+
+  --uncat-bg: #e8e5e1;
+  --uncat-border: #d3cec6;
+  --uncat-text: #5c5752;
 }
 
 [data-theme="dark"] {
-  --app-bg: #0b1221;
-  --panel-bg: #111827;
-  --panel-border: #1f2937;
-  --text-primary: #e5e7eb;
-  --text-muted: #94a3b8;
-  --accent: #60a5fa;
-  --accent-soft: #1d3a63;
+  /* Morandi-inspired palette (dark) */
+  --app-bg: #0f1416;
+  --panel-bg: #141a1d;
+  --panel-border: #1f262b;
+  --text-primary: #e8e4dc;
+  --text-muted: #9aa2a5;
+  --accent: #8baaaa;
+  --accent-soft: #1f2a2d;
   --shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.45);
 
-  --quiz-bg: #2c1b0f;
-  --quiz-border: #f59e0b66;
-  --quiz-text: #fcd19c;
+  --cta-strong: #5f7c75;
+  --cta-bg: #6f8e87;
+  --cta-text: #0f1416;
 
-  --hw-bg: #0d223f;
-  --hw-border: #60a5fa66;
-  --hw-text: #cfe2ff;
+  --danger-strong: #9f6f68;
+  --danger-bg: #b38179;
+  --danger-text: #0f1416;
 
-  --uncat-bg: #1c2433;
-  --uncat-border: #334155;
-  --uncat-text: #cbd5e1;
+  --quiz-bg: #2a221b;
+  --quiz-border: #e2c9b433;
+  --quiz-text: #e6c4a3;
+
+  --hw-bg: #1f2731;
+  --hw-border: #c6d0dd33;
+  --hw-text: #cbd4df;
+
+  --uncat-bg: #1c1f22;
+  --uncat-border: #3a4247;
+  --uncat-text: #d5cfc7;
 }
 
 body {
@@ -72,6 +90,51 @@ body {
 .surface-card.surface-static:hover {
   transform: none;
   box-shadow: var(--shadow-soft);
+}
+
+.fab {
+  box-shadow: 0 12px 28px rgba(47, 42, 40, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.fab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(47, 42, 40, 0.22);
+}
+
+.fab-primary {
+  background-color: var(--cta-strong);
+  color: var(--cta-text);
+}
+
+.fab-primary:hover {
+  background-color: var(--cta-bg);
+}
+
+.fab-danger {
+  background-color: var(--danger-strong);
+  color: var(--danger-text);
+}
+
+.fab-danger:hover {
+  background-color: var(--danger-bg);
+}
+
+.fab-ghost {
+  background-color: var(--panel-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--panel-border);
+}
+
+.button-danger {
+  background-color: var(--danger-strong);
+  color: var(--danger-text);
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+
+.button-danger:hover {
+  background-color: var(--danger-bg);
+  filter: brightness(1.03);
 }
 
 .category-card {

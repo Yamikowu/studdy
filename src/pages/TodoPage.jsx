@@ -127,7 +127,7 @@ function TodoPage() {
 
       <Link
         to="/add-todo"
-        className="fixed bottom-24 right-6 bg-green-500 hover:bg-green-600 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center text-4xl shadow-lg transition-transform transform hover:scale-110"
+        className="fixed bottom-24 right-6 font-bold w-16 h-16 rounded-full flex items-center justify-center text-4xl fab fab-primary"
       >
         +
       </Link>

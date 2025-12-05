@@ -7,7 +7,7 @@ import { getDummyCourses } from '../data/dummyCourses';
 
 const getThemeFromTime = () => {
   const hour = new Date().getHours();
-  return hour >= 7 && hour < 16 ? 'light' : 'dark';
+  return hour >= 7 && hour < 17 ? 'light' : 'dark';
 };
 
 function Layout() {
@@ -76,7 +76,8 @@ function Layout() {
         {/* --- 【關鍵新增 2】：重置按鈕 --- */}
         <button
           onClick={handleResetData}
-          className="text-xl font-bold hover:text-red-500 active:text-red-700 transition-colors"
+          className="text-xl font-bold transition-colors hover:opacity-80 active:opacity-100"
+          style={{ color: 'var(--text-primary)' }}
           title="點擊以重置所有 App 資料" // 滑鼠移上去時會顯示提示
         >
           STUDDY · {theme === 'light' ? 'Day' : 'Night'}
