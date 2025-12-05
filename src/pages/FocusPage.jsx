@@ -116,8 +116,9 @@ function FocusPage() {
     // if(audioRef.current) audioRef.current.currentTime = 0;
   }
 
+  // wu改: 調整容器高度，避免畫面過度下移
   return (
-    <div className="relative w-auto -mx-6 h-[calc(100vh-130px)] overflow-hidden bg-gray-900 shadow-inner">
+    <div className="relative w-auto -mx-6 h-[calc(100vh-110px)] overflow-hidden bg-gray-900 shadow-inner">
       
       <CharacterAnimation 
         isWorking={timerMode === 'pomodoro'}
@@ -140,7 +141,8 @@ function FocusPage() {
       />
 
       {/* 計時器面板 */}
-      <div className="absolute bottom-6 left-6 z-10">
+      {/* wu改: 提升計時面板，避免過度貼近底部 */}
+      <div className="absolute bottom-10 left-6 z-10">
         <div className="
             backdrop-blur-md bg-black/30 border border-white/20 
             text-white p-5 rounded-2xl shadow-xl
