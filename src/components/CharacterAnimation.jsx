@@ -12,10 +12,12 @@ function CharacterAnimation({ isWorking, isMoving }) {
       <img 
         src={currentBackground} 
         alt="Background" 
+        // wu改: 上移背景圖片，避免白邊露出
         className="w-full h-full object-cover transition-opacity duration-700"
+        style={{ objectPosition: 'center -60px' }}
       />
-      {/* 美化：加入漸層黑影，讓下方的白色文字更清楚，但不會遮住中間的圖 */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10"></div>
+      {/* 保留輕量漸層，提升文字可讀性 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"></div>
     </div>
   );
 }
