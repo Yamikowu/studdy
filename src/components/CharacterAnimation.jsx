@@ -14,8 +14,6 @@ function CharacterAnimation({ isWorking, isMoving }) {
         alt="Background" 
         className="w-full h-full object-contain transition-opacity duration-700"
       />
-      {/* 保留輕量漸層，提升文字可讀性 */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"></div>
     </div>
   );
 }
