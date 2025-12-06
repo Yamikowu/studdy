@@ -113,7 +113,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
           </select>
         </div>
         <div>
-          <label htmlFor="time" className="block text-md font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>時間 (可選)</label>
+          <label htmlFor="time" className="block text-md font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>執行時間 (可選)</label>
           <input
             type="datetime-local"
             id="time"

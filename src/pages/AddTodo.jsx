@@ -1,9 +1,12 @@
 // src/pages/AddTodoPage.jsx
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import TodoForm from '../components/TodoForm';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 
 function AddTodoPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
   // 從 localStorage 讀取 courses 列表給下拉選單使用
   const [courses] = useLocalStorageState('courses', []);
   // 獲取 setTodos 這個「寫入」函式
@@ -24,8 +27,8 @@ function AddTodoPage() {
       return [...safePrevTodos, newTodo];
     });
 
-    // alert('新增成功！');
-    // navigate('/'); 這行已經在 TodoForm 裡了
+    const backTo = location.state?.from || '/';
+    navigate(backTo);
   };
 
   return (
