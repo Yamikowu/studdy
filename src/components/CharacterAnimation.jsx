@@ -12,9 +12,7 @@ function CharacterAnimation({ isWorking, isMoving }) {
       <img 
         src={currentBackground} 
         alt="Background" 
-        // wu改: 上移背景圖片，避免白邊露出
-        className="w-full h-full object-cover transition-opacity duration-700"
-        style={{ objectPosition: 'center -80px' }}
+        className="w-full h-full object-contain transition-opacity duration-700"
       />
       {/* 保留輕量漸層，提升文字可讀性 */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"></div>
