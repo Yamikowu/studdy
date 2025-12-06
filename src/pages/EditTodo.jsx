@@ -26,6 +26,7 @@ function EditTodoPage() {
       ...formData,
       // 同樣，確保 courseId 是數字或 null
       courseId: formData.courseId ? parseInt(formData.courseId) : null,
+      deadline: formData.deadline || '',
     };
 
     // 使用 setTodos 來更新 localStorage

@@ -175,6 +175,9 @@ export default function FullTimelinePage() {
                   {segment.todos.map(todo => {
                     const categoryKey = todo.category || '未分類';
                     const styleClass = getCategoryClass(categoryKey);
+                    const deadlineText = todo.deadline
+                      ? formatTime(new Date(todo.deadline))
+                      : '';
                     return (
                       <Link
                         key={todo.id}
@@ -184,8 +187,13 @@ export default function FullTimelinePage() {
                       >
                         <p className="font-semibold">{todo.title}</p>
                         {/* <p className="text-xs">{formatTime(new Date(todo.time))}</p> */}
-                        <p className="text-xs">
-                          {formatTime(new Date(todo.time))} - {formatTime(new Date(new Date(todo.time).getTime() + (todo.duration || 60) * 60 * 1000))}
+                        <p className="text-xs flex items-center gap-2">
+                          <span>
+                            {formatTime(new Date(todo.time))} - {formatTime(new Date(new Date(todo.time).getTime() + (todo.duration || 60) * 60 * 1000))}
+                          </span>
+                          {deadlineText && (
+                            <span className="text-red-500">截止 {deadlineText}</span>
+                          )}
                         </p>
                       </Link>
                     );

@@ -62,6 +62,7 @@ function TodoPage() {
                 // 原始時間格式可能是 "2025-11-12T10:30"
                 // 我們可以把它變得更易讀，例如 "11/12 10:30"
                 let formattedTime = '';
+                let formattedDeadline = '';
                 if (todo.id === 5) {
                   // 吃飯這筆永遠顯示當天日期，時間沿用原本設定
                   const today = new Date();
@@ -79,6 +80,14 @@ function TodoPage() {
                   const hours = date.getHours().toString().padStart(2, '0');
                   const minutes = date.getMinutes().toString().padStart(2, '0');
                   formattedTime = `${month}/${day} ${hours}:${minutes}`;
+                }
+                if (todo.deadline) {
+                  const date = new Date(todo.deadline);
+                  const month = date.getMonth() + 1;
+                  const day = date.getDate();
+                  const hours = date.getHours().toString().padStart(2, '0');
+                  const minutes = date.getMinutes().toString().padStart(2, '0');
+                  formattedDeadline = `${month}/${day} ${hours}:${minutes}`;
                 }
 
 
@@ -115,8 +124,11 @@ function TodoPage() {
                               flex-shrink-0 確保時間不會被壓縮
                             */}
                           {formattedTime && (
-                            <span className="text-sm font-mono ml-4 flex-shrink-0">
-                              {formattedTime}
+                            <span className="text-sm font-mono ml-4 flex-shrink-0 flex items-center space-x-3 ">
+                              <span>{formattedTime}</span>
+                              {formattedDeadline && (
+                                <span className="text-red-500"> {formattedDeadline}</span>
+                              )}
                             </span>
                           )}
                         </div>

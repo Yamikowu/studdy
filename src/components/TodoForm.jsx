@@ -11,6 +11,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
     category: existingTodo?.category || 'none',
     time: existingTodo?.time || '',
     duration: existingTodo?.duration || '', // <-- 新增 duration，單位是分鐘
+    deadline: existingTodo?.deadline || '',
     subtasks: existingTodo?.subtasks || [],
   });
 
@@ -27,6 +28,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         category: existingTodo.category || 'none',
         time: existingTodo.time || '',
         duration: existingTodo.duration || '',
+        deadline: existingTodo.deadline || '',
         subtasks: existingTodo.subtasks || [],
       });
     }
@@ -137,6 +139,20 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
             style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
           />
         </div>
+        {(formData.category === 'hw' || formData.category === 'quiz') && (
+          <div>
+            <label htmlFor="deadline" className="block text-md font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>截止時間 (可選)</label>
+            <input
+              type="datetime-local"
+              id="deadline"
+              name="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+              className="p-2 border rounded-md shadow-sm"
+              style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
+            />
+          </div>
+        )}
       </div>
       <div
         className="p-4 border-2 border-dotted rounded-lg"

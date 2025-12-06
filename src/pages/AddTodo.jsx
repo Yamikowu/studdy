@@ -19,6 +19,7 @@ function AddTodoPage() {
       ...formData,
       // 確保 courseId 是數字類型，如果它是空字串就設為 null
       courseId: formData.courseId ? parseInt(formData.courseId) : null,
+      deadline: formData.deadline || '',
     };
 
     // 2. 使用 setTodos 來更新 localStorage 中的 'todos' 列表
