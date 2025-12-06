@@ -132,10 +132,10 @@ function FocusPage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 overflow-hidden flex flex-col">
+    <div className="fixed inset-0 overflow-hidden flex flex-col" style={{ backgroundColor: 'var(--app-bg)' }}>
       
-      {/* 背景動畫 */}
-      <div className="flex-1 relative overflow-hidden">
+      {/* 背景動畫 - 調整高度以容納控制面板 */}
+      <div className="flex-1 relative overflow-hidden" style={{ maxHeight: 'calc(100vh - 280px)' }}>
         <CharacterAnimation 
           isWorking={timerMode === 'pomodoro'}
           isMoving={isRunning && timerMode === 'pomodoro'} 
@@ -147,12 +147,12 @@ function FocusPage() {
       {/* 設定面板 */}
       {showSettings && (
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-20 flex items-center justify-center p-4">
-          <div className="bg-white/95 dark:bg-gray-900/95 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">時間設定</h3>
+          <div className="surface-card p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>時間設定</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   專注時間 (分鐘)
                 </label>
                 <input 
@@ -161,12 +161,17 @@ function FocusPage() {
                   max="120"
                   value={pomodoroMinutes}
                   onChange={(e) => setPomodoroMinutes(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ 
+                    backgroundColor: 'var(--panel-bg)', 
+                    color: 'var(--text-primary)',
+                    borderColor: 'var(--panel-border)'
+                  }}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   短休息 (分鐘)
                 </label>
                 <input 
@@ -175,12 +180,17 @@ function FocusPage() {
                   max="60"
                   value={shortBreakMinutes}
                   onChange={(e) => setShortBreakMinutes(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ 
+                    backgroundColor: 'var(--panel-bg)', 
+                    color: 'var(--text-primary)',
+                    borderColor: 'var(--panel-border)'
+                  }}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                   長休息 (分鐘)
                 </label>
                 <input 
@@ -189,7 +199,12 @@ function FocusPage() {
                   max="60"
                   value={longBreakMinutes}
                   onChange={(e) => setLongBreakMinutes(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{ 
+                    backgroundColor: 'var(--panel-bg)', 
+                    color: 'var(--text-primary)',
+                    borderColor: 'var(--panel-border)'
+                  }}
                 />
               </div>
             </div>
@@ -197,13 +212,13 @@ function FocusPage() {
             <div className="flex space-x-3 mt-6">
               <button 
                 onClick={() => setShowSettings(false)}
-                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg font-medium transition-colors fab fab-ghost"
               >
                 取消
               </button>
               <button 
                 onClick={handleApplySettings}
-                className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 rounded-lg font-medium transition-colors fab fab-primary"
               >
                 套用
               </button>
@@ -212,39 +227,51 @@ function FocusPage() {
         </div>
       )}
 
-      {/* 控制面板 */}
-      <div className="flex-shrink-0 backdrop-blur-2xl bg-gradient-to-t from-gray-900/95 via-gray-900/80 to-transparent">
-        <div className="w-full px-4 pt-3 pb-4">
+      {/* 控制面板 - 固定在圖片下方 */}
+      <div className="flex-shrink-0 rounded-t-3xl" style={{ 
+        backgroundColor: 'var(--panel-bg)',
+        borderTop: '2px solid var(--panel-border)',
+        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.1)'
+      }}>
+        <div className="w-full px-4 pt-6 pb-6">
           
           {/* 狀態列 */}
-          <div className="flex items-center justify-center space-x-2 mb-2">
+          <div className="flex items-center justify-center space-x-2 mb-3">
             <div className={`w-1.5 h-1.5 rounded-full ${
               isRunning 
                 ? 'bg-emerald-400 animate-pulse shadow-lg shadow-emerald-400/50' 
                 : 'bg-amber-400 shadow-lg shadow-amber-400/50'
             }`} />
-            <span className="text-[10px] font-bold tracking-[0.2em] text-white/50 uppercase">
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase" style={{ color: 'var(--text-muted)' }}>
               {getModeTitle()}
             </span>
-            <span className="text-[10px] text-white/30">· 第 {pomodoroCount} 輪</span>
+            <span className="text-[10px]" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>· 第 {pomodoroCount} 輪</span>
           </div>
 
           {/* 時間 */}
-          <div className="text-center mb-3">
-            <div className="text-5xl font-extralight tracking-tighter text-white" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          <div className="text-center mb-4">
+            <div className="text-6xl font-extralight tracking-tighter" style={{ 
+              fontVariantNumeric: 'tabular-nums',
+              color: 'var(--text-primary)'
+            }}>
               {displayTime}
             </div>
           </div>
 
           {/* 按鈕 */}
-          <div className="flex items-center justify-center space-x-3 mb-3">
+          <div className="flex items-center justify-center space-x-3 mb-4">
             <button 
               onClick={() => setIsRunning(!isRunning)} 
               className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-300 shadow-xl
                 ${isRunning 
-                  ? 'bg-white/20 hover:bg-white/30 active:bg-white/35 text-white border-2 border-white/20' 
-                  : 'bg-white text-gray-900 hover:bg-gray-50 active:bg-gray-200 shadow-white/20'
+                  ? 'border-2' 
+                  : 'fab fab-primary'
                 }`}
+              style={isRunning ? {
+                backgroundColor: 'var(--panel-bg)',
+                borderColor: 'var(--accent)',
+                color: 'var(--text-primary)'
+              } : {}}
             >
               {isRunning ? (
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -259,7 +286,8 @@ function FocusPage() {
 
             <button 
               onClick={handleReset}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/25 active:bg-white/30 text-white/60 hover:text-white transition-all border border-white/10"
+              className="w-11 h-11 flex items-center justify-center rounded-full transition-all border fab fab-ghost"
+              style={{ opacity: 0.8 }}
               title="重置"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -269,7 +297,8 @@ function FocusPage() {
 
             <button 
               onClick={() => setShowSettings(true)}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/25 active:bg-white/30 text-white/60 hover:text-white transition-all border border-white/10"
+              className="w-11 h-11 flex items-center justify-center rounded-full transition-all border fab fab-ghost"
+              style={{ opacity: 0.8 }}
               title="設定"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -281,13 +310,16 @@ function FocusPage() {
 
           {/* 音量 */}
           <div className="flex items-center space-x-3 max-w-sm mx-auto">
-            <svg className="w-4 h-4 text-white/40 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" style={{ color: 'var(--text-muted)' }}>
               <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
             </svg>
-            <div className="flex-1 relative h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="flex-1 relative h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--panel-border)' }}>
               <div 
-                className="absolute left-0 top-0 h-full bg-gradient-to-r from-white/40 to-white/60 transition-all duration-150 rounded-full"
-                style={{ width: `${volume}%` }}
+                className="absolute left-0 top-0 h-full transition-all duration-150 rounded-full"
+                style={{ 
+                  width: `${volume}%`,
+                  backgroundColor: 'var(--accent)'
+                }}
               />
               <input 
                 type="range" 
@@ -298,7 +330,7 @@ function FocusPage() {
                 className="absolute inset-0 w-full opacity-0 cursor-pointer"
               />
             </div>
-            <span className="text-xs text-white/40 font-mono w-8 text-right flex-shrink-0 tabular-nums">{volume}</span>
+            <span className="text-xs font-mono w-8 text-right flex-shrink-0 tabular-nums" style={{ color: 'var(--text-muted)' }}>{volume}</span>
           </div>
 
         </div>
