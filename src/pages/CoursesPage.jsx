@@ -34,6 +34,7 @@ function CoursesPage() {
     });
     if (bestId === null) return;
     setExpandedCourseIds(prev => (prev.length === 0 ? [bestId] : prev));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courses, todos]);
 
   const handleCourseClick = (courseId) => {

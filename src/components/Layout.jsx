@@ -16,14 +16,14 @@ function Layout() {
   // --- 【關鍵新增 1】：建立重置函式 ---
   const handleResetData = () => {
     // 跳出一個確認視窗，確保使用者不是誤觸
-    if (window.confirm('您確定要重置所有資料嗎？所有課程和待辦事項都將恢復到初始狀態。這個操作無法復原！')) {
+    if (window.confirm('您確定要重置所有資料嗎？所有課程和待辦事項都將恢復到初始狀態。請跳到To-do頁面進行重置，操作將無法復原！')) {
 
       // 清除我們儲存在 localStorage 的所有資料
       window.localStorage.removeItem('todos');
       window.localStorage.removeItem('courses');
 
-      // 提示使用者操作成功
-      alert('資料已重置！');
+      // // 提示使用者操作成功
+      // alert('資料已重置！');
 
       // 重新載入整個應用程式，來讀取初始的假資料
       window.location.reload();

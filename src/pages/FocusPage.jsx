@@ -142,7 +142,7 @@ function FocusPage() {
         />
       </div>
       
-      <audio ref={audioRef} loop onError={(e) => console.error("音樂檔案讀取失敗")} />
+      <audio ref={audioRef} loop onError={() => console.error("音樂檔案讀取失敗")} />
 
       {/* 設定面板 */}
       {showSettings && (
