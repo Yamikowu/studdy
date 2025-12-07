@@ -249,15 +249,15 @@ export default function FullTimelinePage() {
                       >
                         <p className="font-semibold">{todo.title}</p>
                         {/* <p className="text-xs">{formatTime(new Date(todo.time))}</p> */}
-                        <p className="text-xs flex items-center gap-2">
-                          <span>
+                        <div className="text-xs flex items-center justify-between gap-3">
+                          <span className="flex-shrink-0">
                             {startText}
                             {!todo.allDay && endText ? ` - ${endText}` : ''}
                           </span>
                           {deadlineText && (
-                            <span className="text-red-500">截止 {deadlineText}</span>
+                            <span className="text-xs text-red-500 flex-shrink-0">截止 {deadlineText}</span>
                           )}
-                        </p>
+                        </div>
                       </Link>
                     );
                   })}

@@ -1,6 +1,6 @@
 // src/pages/CoursesPage.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import FloatingInputModal from '../components/FloatingInputModal';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
@@ -16,6 +16,25 @@ function CoursesPage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // 1. 新增一個 state 來管理「刪除模式」
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+  const getCourseTodoCount = (courseId) =>
+    todos.filter(todo => todo.courseId === courseId).length;
+
+  // 預設展開待辦數量最多的課程（若同數量則取列表中較前面的）
+  useEffect(() => {
+    if (!courses || courses.length === 0) return;
+    let bestId = null;
+    let bestCount = -1;
+    courses.forEach(course => {
+      const count = getCourseTodoCount(course.id);
+      if (count > bestCount) {
+        bestId = course.id;
+        bestCount = count;
+      }
+    });
+    if (bestId === null) return;
+    setExpandedCourseIds(prev => (prev.length === 0 ? [bestId] : prev));
+  }, [courses, todos]);
 
   const handleCourseClick = (courseId) => {
     // 在刪除模式下，點擊課程不應該觸發展開/收合
