@@ -76,11 +76,11 @@ function Layout() {
         {/* --- 【關鍵新增 2】：重置按鈕 --- */}
         <button
           onClick={handleResetData}
-          className="text-xl font-bold transition-colors hover:opacity-80 active:opacity-100"
+          className="mt-1 text-xl font-bold transition-colors hover:opacity-80 active:opacity-100"
           style={{ color: 'var(--text-primary)' }}
-          title="點擊以重置所有 App 資料" // 滑鼠移上去時會顯示提示
+          title="重置 App 資料" // 滑鼠移上去時會顯示提示
         >
-          STUDDY · {theme === 'light' ? 'Day' : 'Night'}
+          STUDDY · {theme === 'light' ? 'Morning' : 'Night'}
         </button>
       </header>
 

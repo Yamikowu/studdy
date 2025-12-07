@@ -1,6 +1,8 @@
 // src/data/dummyTodos.js
 // 提供預設的 todo 資料，讓各頁面共用
 
+const SKIP_LUNCH_KEY = 'skipLunchDate';
+
 const todayAt = (time = '12:00') => {
   const [hours, minutes] = time.split(':').map(Number);
   const date = new Date();
@@ -8,11 +10,40 @@ const todayAt = (time = '12:00') => {
   return date.toISOString();
 };
 
+const getSkipLunchDate = () => {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(SKIP_LUNCH_KEY);
+};
+
+export const setSkipLunchDate = (dateString) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(SKIP_LUNCH_KEY, dateString);
+  } catch (e) {
+    console.error('Failed to set skip lunch date', e);
+  }
+};
+
+const clearSkipLunchDate = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.removeItem(SKIP_LUNCH_KEY);
+  } catch (e) {
+    console.error('Failed to clear skip lunch date', e);
+  }
+};
+
 const isSameDay = (date, todayKey) => date && date.toDateString() === todayKey;
 
 export function ensureMealToday(todos) {
   const safeTodos = Array.isArray(todos) ? todos : [];
   const todayKey = new Date().toDateString();
+  const skipDate = getSkipLunchDate();
+
+  // 若已經跨日，清掉舊的 skip 標記
+  if (skipDate && skipDate !== todayKey) {
+    clearSkipLunchDate();
+  }
 
   const mealIndex = safeTodos.findIndex(t => t.id === 5);
   const buildMealTime = (baseTime) => {
@@ -26,6 +57,11 @@ export function ensureMealToday(todos) {
 
   // 若沒有吃飯這筆，補上一筆今天的 12:00
   if (mealIndex === -1) {
+    // 如果使用者今天手動完成/刪掉了 Lunch，就不要再自動補回來
+    if (skipDate && skipDate === todayKey) {
+      return safeTodos;
+    }
+
     return [
       ...safeTodos,
       { id: 5, title: 'Lunch', category: null, time: todayAt('12:00'), duration: '60' },

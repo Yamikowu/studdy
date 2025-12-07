@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
-import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
+import { getDummyTodos, ensureMealToday, setSkipLunchDate } from '../data/dummyTodos';
 import { getCategoryClass } from '../theme/categoryClasses';
 
 function TodoPage() {
@@ -38,6 +38,10 @@ function TodoPage() {
   };
 
   const handleDeleteTodo = (idToDelete) => {
+    if (idToDelete === 5) {
+      const todayKey = new Date().toDateString();
+      setSkipLunchDate(todayKey);
+    }
     setTodos(currentTodos => currentTodos.filter(todo => todo.id !== idToDelete));
   };
 

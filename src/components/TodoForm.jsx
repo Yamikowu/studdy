@@ -128,7 +128,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
 
         <div>
           <label htmlFor="time" className="block text-md font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>執行時間 (可選)</label>
-          <div className="flex items-center space-x-3 flex-wrap">
+          <div className="flex flex-wrap items-start sm:items-center gap-2">
             <input
               type={formData.allDay ? 'date' : 'datetime-local'}
               id="time"
@@ -142,7 +142,10 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
               className="w-full sm:max-w-xs p-2 border rounded-md shadow-sm"
               style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
             />
-            <label className="inline-flex items-center space-x-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <label
+              className="inline-flex items-center space-x-2 text-sm sm:ml-2 mt-2 sm:mt-0"
+              style={{ color: 'var(--text-primary)' }}
+            >
               <input
                 type="checkbox"
                 checked={formData.allDay}
@@ -162,7 +165,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
                 }}
                 className="h-4 w-4"
               />
-              <span>全天</span>
+              <span>整日</span>
             </label>
           </div>
         </div>
@@ -185,7 +188,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         {(formData.category === 'hw' || formData.category === 'quiz') && (
           <div>
             <label htmlFor="deadline" className="block text-md font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>截止時間 (可選)</label>
-            <div className="flex items-center space-x-3 flex-wrap">
+            <div className="flex flex-wrap items-start sm:items-center gap-2">
               <input
                 type={formData.deadlineAllDay ? 'date' : 'datetime-local'}
                 id="deadline"
@@ -205,7 +208,10 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
                 className="w-full sm:max-w-xs p-2 border rounded-md shadow-sm"
                 style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
               />
-              <label className="inline-flex items-center space-x-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+              <label
+                className="inline-flex items-center space-x-2 text-sm sm:ml-2 mt-2 sm:mt-0"
+                style={{ color: 'var(--text-primary)' }}
+              >
                 <input
                   type="checkbox"
                   checked={formData.deadlineAllDay}
@@ -224,7 +230,7 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
                   }}
                   className="h-4 w-4"
                 />
-                <span>全天</span>
+                <span>整日</span>
               </label>
             </div>
           </div>
