@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // src/pages/TodoPage.jsx
 
 
@@ -62,6 +63,7 @@ function TodoPage() {
                 // 原始時間格式可能是 "2025-11-12T10:30"
                 // 我們可以把它變得更易讀，例如 "11/12 10:30"
                 let formattedTime = '';
+                let durationText = '';
                 let formattedDeadline = '';
                 if (todo.id === 5) {
                   // 吃飯這筆永遠顯示當天日期，時間沿用原本設定
@@ -74,20 +76,29 @@ function TodoPage() {
                   formattedTime = `${month}/${day} ${hours}:${minutes}`;
                 } else if (todo.time) {
                   const date = new Date(todo.time);
-                  // 用 toLocaleString 可以得到不錯的本地化格式，但我們也可以手動組合
                   const month = date.getMonth() + 1; // getMonth() 是從 0 開始的
                   const day = date.getDate();
-                  const hours = date.getHours().toString().padStart(2, '0');
-                  const minutes = date.getMinutes().toString().padStart(2, '0');
-                  formattedTime = `${month}/${day} ${hours}:${minutes}`;
+
+                  if (todo.allDay) {
+                    formattedTime = `${month}/${day} 整日`;
+                  } else {
+                    // 用 toLocaleString 可以得到不錯的本地化格式，但我們也可以手動組合
+                    const hours = date.getHours().toString().padStart(2, '0');
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    formattedTime = `${month}/${day} ${hours}:${minutes}`;
+                  }
                 }
                 if (todo.deadline) {
                   const date = new Date(todo.deadline);
                   const month = date.getMonth() + 1;
                   const day = date.getDate();
-                  const hours = date.getHours().toString().padStart(2, '0');
-                  const minutes = date.getMinutes().toString().padStart(2, '0');
-                  formattedDeadline = `${month}/${day} ${hours}:${minutes}`;
+                  if (todo.deadlineAllDay) {
+                    formattedDeadline = `${month}/${day} 整日`;
+                  } else {
+                    const hours = date.getHours().toString().padStart(2, '0');
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    formattedDeadline = `${month}/${day} ${hours}:${minutes}`;
+                  }
                 }
 
 
@@ -129,6 +140,11 @@ function TodoPage() {
                               {formattedDeadline && (
                                 <span className="text-red-500"> {formattedDeadline}</span>
                               )}
+                            </span>
+                          )}
+                          {!formattedTime && formattedDeadline && (
+                            <span className="text-sm font-mono ml-4 flex-shrink-0 flex items-center space-x-3 ">
+                              <span className="text-red-500">{formattedDeadline}</span>
                             </span>
                           )}
                         </div>

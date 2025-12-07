@@ -99,13 +99,30 @@ function CoursesPage() {
 
                       // 【同樣的時間格式化邏輯】
                       let formattedTime = '';
+                      let formattedDeadline = '';
                       if (todo.time) { // 我們讀取 todo.time
                         const date = new Date(todo.time);
                         const month = date.getMonth() + 1;
                         const day = date.getDate();
-                        const hours = date.getHours().toString().padStart(2, '0');
-                        const minutes = date.getMinutes().toString().padStart(2, '0');
-                        formattedTime = `${month}/${day} ${hours}:${minutes}`;
+                        if (todo.allDay) {
+                          formattedTime = `${month}/${day} 整日`;
+                        } else {
+                          const hours = date.getHours().toString().padStart(2, '0');
+                          const minutes = date.getMinutes().toString().padStart(2, '0');
+                          formattedTime = `${month}/${day} ${hours}:${minutes}`;
+                        }
+                      }
+                      if (todo.deadline) {
+                        const date = new Date(todo.deadline);
+                        const month = date.getMonth() + 1;
+                        const day = date.getDate();
+                        if (todo.deadlineAllDay) {
+                          formattedDeadline = `${month}/${day} 整日`;
+                        } else {
+                          const hours = date.getHours().toString().padStart(2, '0');
+                          const minutes = date.getMinutes().toString().padStart(2, '0');
+                          formattedDeadline = `${month}/${day} ${hours}:${minutes}`;
+                        }
                       }
 
                       return (
@@ -121,9 +138,10 @@ function CoursesPage() {
                             <div className="flex justify-between items-center">
                               <span className="font-medium truncate">{todo.title}</span>
                               {/* 只有在時間存在時才顯示 */}
-                              {formattedTime && (
-                                <span className="text-sm font-mono ml-2 flex-shrink-0 opacity-80">
-                                  {formattedTime}
+                              {(formattedTime || formattedDeadline) && (
+                                <span className="text-sm font-mono ml-2 flex-shrink-0 opacity-80 flex items-center space-x-2">
+                                  {formattedTime && <span>{formattedTime}</span>}
+                                  {formattedDeadline && <span className="text-red-500">{formattedDeadline}</span>}
                                 </span>
                               )}
                             </div>

@@ -1,10 +1,10 @@
 // src/pages/TimelinePage.jsx
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { getWeekDays, formatDateKey, getDayName } from '../utils/dateHelpers.jsx';
-import { getDummyTodos } from '../data/dummyTodos';
+import { getDummyTodos, ensureMealToday } from '../data/dummyTodos';
 import { getCategoryClass } from '../theme/categoryClasses';
 
 // 幫手函式：格式化時間為 HH:MM
@@ -15,13 +15,18 @@ const formatTime = (date) => {
 };
 
 export default function FullTimelinePage() {
-  const [todos] = useLocalStorageState('todos', getDummyTodos());
+  const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
   const location = useLocation();
   // eslint-disable-next-line no-unused-vars
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const weekDays = getWeekDays(currentDate);
+
+  // 確保每天都能看到最新的吃飯項目，即便 Timeline 是第一個進來的頁面
+  useEffect(() => {
+    setTodos(current => ensureMealToday(current || getDummyTodos()));
+  }, [setTodos]);
 
   const dayTodos = useMemo(() => {
     const safeTodos = Array.isArray(todos) ? todos : [];
@@ -34,6 +39,16 @@ export default function FullTimelinePage() {
       })
       .sort((a, b) => new Date(a.time) - new Date(b.time));
   }, [todos, selectedDate]);
+
+  const allDayTodos = useMemo(
+    () => dayTodos.filter(todo => todo.allDay),
+    [dayTodos]
+  );
+
+  const timedTodos = useMemo(
+    () => dayTodos.filter(todo => !todo.allDay),
+    [dayTodos]
+  );
 
   const timelineSegments = useMemo(() => {
     const anchorHours = [7, 12, 24];
@@ -56,11 +71,11 @@ export default function FullTimelinePage() {
     });
 
     const allItems = [
-      ...dayTodos.map(todo => ({ ...todo, displayHour: new Date(todo.time).getHours() })),
+      ...timedTodos.map(todo => ({ ...todo, displayHour: new Date(todo.time).getHours() })),
       ...anchors
     ].sort((a, b) => new Date(a.time) - new Date(b.time));
 
-    if (allItems.length === anchorHours.length && dayTodos.length === 0) {
+    if (allItems.length === anchorHours.length && timedTodos.length === 0) {
       return allItems.map(item => ({ ...item, startTime: new Date(item.time) }));
     }
 
@@ -131,7 +146,7 @@ export default function FullTimelinePage() {
     return finalSegments.filter(seg => !(seg.type === 'group' && seg.todos.length === 0));
 
 
-  }, [dayTodos, selectedDate]);
+  }, [timedTodos, selectedDate]);
 
   return (
     <div className="flex flex-col h-full" style={{ color: 'var(--text-primary)' }}>
@@ -160,6 +175,43 @@ export default function FullTimelinePage() {
         })}
       </div>
 
+      {allDayTodos.length > 0 && (
+        <div
+          className="mb-3 px-3 py-3 rounded-xl border"
+          style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)' }}
+        >
+          <div className="text-center text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
+            All Day
+          </div>
+          <div className="space-y-2">
+            {allDayTodos.map(todo => {
+              const categoryKey = todo.category || '未分類';
+              const styleClass = getCategoryClass(categoryKey);
+              const deadlineText = todo.deadline
+                ? (todo.deadlineAllDay
+                  ? `${(new Date(todo.deadline).getMonth() + 1).toString().padStart(2, '0')}/${new Date(todo.deadline).getDate().toString().padStart(2, '0')} 整日`
+                  : `${formatTime(new Date(todo.deadline))}`)
+                : '';
+              return (
+                <Link
+                  key={todo.id}
+                  to={`/edit-todo/${todo.id}`}
+                  state={{ from: location.pathname + location.search }}
+                  className={`block p-3 rounded-lg ${styleClass} hover:opacity-80`}
+                >
+                  <div className="flex justify-between items-center gap-2">
+                    <p className="font-semibold truncate">{todo.title}</p>
+                    {deadlineText && (
+                      <span className="text-xs text-red-500 flex-shrink-0">截止 {deadlineText}</span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="flex-grow">
         {timelineSegments.map(segment => {
           if (segment.type === 'group' && segment.todos.length > 0) {
@@ -175,8 +227,18 @@ export default function FullTimelinePage() {
                   {segment.todos.map(todo => {
                     const categoryKey = todo.category || '未分類';
                     const styleClass = getCategoryClass(categoryKey);
+                    const hasTime = Boolean(todo.time);
+                    const startDate = hasTime ? new Date(todo.time) : null;
                     const deadlineText = todo.deadline
-                      ? formatTime(new Date(todo.deadline))
+                      ? (todo.deadlineAllDay
+                        ? `${(new Date(todo.deadline).getMonth() + 1).toString().padStart(2, '0')}/${new Date(todo.deadline).getDate().toString().padStart(2, '0')} 整日`
+                        : formatTime(new Date(todo.deadline)))
+                      : '';
+                    const startText = todo.allDay
+                      ? (startDate ? `${(startDate.getMonth() + 1).toString().padStart(2, '0')}/${startDate.getDate().toString().padStart(2, '0')} 整日` : '整日')
+                      : (startDate ? formatTime(startDate) : '');
+                    const endText = (!todo.allDay && startDate)
+                      ? formatTime(new Date(startDate.getTime() + (todo.duration || 60) * 60 * 1000))
                       : '';
                     return (
                       <Link
@@ -189,7 +251,8 @@ export default function FullTimelinePage() {
                         {/* <p className="text-xs">{formatTime(new Date(todo.time))}</p> */}
                         <p className="text-xs flex items-center gap-2">
                           <span>
-                            {formatTime(new Date(todo.time))} - {formatTime(new Date(new Date(todo.time).getTime() + (todo.duration || 60) * 60 * 1000))}
+                            {startText}
+                            {!todo.allDay && endText ? ` - ${endText}` : ''}
                           </span>
                           {deadlineText && (
                             <span className="text-red-500">截止 {deadlineText}</span>

@@ -10,8 +10,10 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
     courseId: existingTodo?.courseId || '',
     category: existingTodo?.category || 'none',
     time: existingTodo?.time || '',
+    allDay: existingTodo?.allDay || false,
     duration: existingTodo?.duration || '', // <-- 新增 duration，單位是分鐘
     deadline: existingTodo?.deadline || '',
+    deadlineAllDay: existingTodo?.deadlineAllDay || false,
     subtasks: existingTodo?.subtasks || [],
   });
 
@@ -27,8 +29,10 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
         courseId: existingTodo.courseId || '',
         category: existingTodo.category || 'none',
         time: existingTodo.time || '',
+        allDay: existingTodo.allDay || false,
         duration: existingTodo.duration || '',
         deadline: existingTodo.deadline || '',
+        deadlineAllDay: existingTodo.deadlineAllDay || false,
         subtasks: existingTodo.subtasks || [],
       });
     }
@@ -37,6 +41,13 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleTimeChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      time: prev.allDay ? value : value
+    }));
   };
 
   const handleAddSubtask = () => {
@@ -114,18 +125,48 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
             <option value="quiz">測驗 (Quiz)</option>
           </select>
         </div>
+
         <div>
           <label htmlFor="time" className="block text-md font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>執行時間 (可選)</label>
-          <input
-            type="datetime-local"
-            id="time"
-            name="time"
-            value={formData.time}
-            onChange={handleChange}
-            className="p-2 border rounded-md shadow-sm"
-            style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
-          />
+          <div className="flex items-center space-x-3 flex-wrap">
+            <input
+              type={formData.allDay ? 'date' : 'datetime-local'}
+              id="time"
+              name="time"
+              value={
+                formData.allDay
+                  ? (formData.time ? formData.time.slice(0, 10) : '')
+                  : formData.time
+              }
+              onChange={(e) => handleTimeChange(e.target.value)}
+              className="w-full sm:max-w-xs p-2 border rounded-md shadow-sm"
+              style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
+            />
+            <label className="inline-flex items-center space-x-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+              <input
+                type="checkbox"
+                checked={formData.allDay}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setFormData(prev => {
+                    const baseDate = prev.time && prev.time.length >= 10 ? prev.time.slice(0, 10) : '';
+                    return {
+                      ...prev,
+                      allDay: checked,
+                      time: checked
+                        ? baseDate
+                        : (baseDate && (!prev.time || prev.time.length === 10) ? `${baseDate}T00:00` : prev.time),
+                      duration: checked ? '' : prev.duration
+                    };
+                  });
+                }}
+                className="h-4 w-4"
+              />
+              <span>全天</span>
+            </label>
+          </div>
         </div>
+
         <div>
           <label htmlFor="duration" className="block text-md font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>持續時間 (分鐘, 可選)</label>
           <input
@@ -137,20 +178,55 @@ export default function TodoForm({ existingTodo, onSubmit, courses = [] }) {
             placeholder="例如: 60"
             className="w-full p-2 border rounded-md shadow-sm"
             style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
+            disabled={formData.allDay}
           />
         </div>
+
         {(formData.category === 'hw' || formData.category === 'quiz') && (
           <div>
             <label htmlFor="deadline" className="block text-md font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>截止時間 (可選)</label>
-            <input
-              type="datetime-local"
-              id="deadline"
-              name="deadline"
-              value={formData.deadline}
-              onChange={handleChange}
-              className="p-2 border rounded-md shadow-sm"
-              style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
-            />
+            <div className="flex items-center space-x-3 flex-wrap">
+              <input
+                type={formData.deadlineAllDay ? 'date' : 'datetime-local'}
+                id="deadline"
+                name="deadline"
+                value={
+                  formData.deadlineAllDay
+                    ? (formData.deadline ? formData.deadline.slice(0, 10) : '')
+                    : formData.deadline
+                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData(prev => ({
+                    ...prev,
+                    deadline: prev.deadlineAllDay ? value : value
+                  }));
+                }}
+                className="w-full sm:max-w-xs p-2 border rounded-md shadow-sm"
+                style={{ borderColor: 'var(--panel-border)', backgroundColor: 'var(--panel-bg)', color: 'var(--text-primary)' }}
+              />
+              <label className="inline-flex items-center space-x-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.deadlineAllDay}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setFormData(prev => {
+                      const baseDate = prev.deadline && prev.deadline.length >= 10 ? prev.deadline.slice(0, 10) : '';
+                      return {
+                        ...prev,
+                        deadlineAllDay: checked,
+                        deadline: checked
+                          ? baseDate
+                          : (baseDate && (!prev.deadline || prev.deadline.length === 10) ? `${baseDate}T23:59` : prev.deadline),
+                      };
+                    });
+                  }}
+                  className="h-4 w-4"
+                />
+                <span>全天</span>
+              </label>
+            </div>
           </div>
         )}
       </div>
