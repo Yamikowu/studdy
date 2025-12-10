@@ -74,6 +74,11 @@ function CoursesPage() {
       <ul className="space-y-4">
         {courses.map(course => {
           const courseTodos = todos.filter(todo => todo.courseId === course.id);
+          const sortedCourseTodos = [...courseTodos].sort((a, b) => {
+            const deadlineA = a?.deadline ? new Date(a.deadline).getTime() : Infinity;
+            const deadlineB = b?.deadline ? new Date(b.deadline).getTime() : Infinity;
+            return deadlineA - deadlineB;
+          });
           const hwCount = courseTodos.filter(todo => todo.category === 'hw').length;
           const quizCount = courseTodos.filter(todo => todo.category === 'quiz').length;
           const isExpanded = expandedCourseIds.includes(course.id);
@@ -112,7 +117,7 @@ function CoursesPage() {
                   style={{ borderColor: 'var(--panel-border)' }}
                 >
                   <ul className="space-y-2">
-                    {courseTodos.map(todo => {
+                    {sortedCourseTodos.map(todo => {
                       // --- 2. 查詢顏色 ---
                       // 如果 todo.category 是 null，就用 '未分類' 作為 key
                       const styleClass = getCategoryClass(todo.category);

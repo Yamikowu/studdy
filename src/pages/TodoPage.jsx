@@ -12,13 +12,19 @@ function TodoPage() {
   const [todos, setTodos] = useLocalStorageState('todos', getDummyTodos());
   const location = useLocation();
 
+  const sortedTodos = (Array.isArray(todos) ? [...todos] : []).sort((a, b) => {
+    const timeA = a?.time ? new Date(a.time).getTime() : Infinity;
+    const timeB = b?.time ? new Date(b.time).getTime() : Infinity;
+    return timeA - timeB;
+  });
+
   // 確保初始載入/刷新時，吃飯與預設資料到位
   useEffect(() => {
     setTodos(current => ensureMealToday(current || getDummyTodos()));
   }, [setTodos]);
 
   // 【關鍵修改 1】：統一分組邏輯
-  const groupedTodos = (Array.isArray(todos) ? todos : []).reduce((groups, todo) => {
+  const groupedTodos = sortedTodos.reduce((groups, todo) => {
     // 如果 category 是 'none', null, 或 undefined，我們都把它當作 '未分類'
     const categoryKey = (todo.category === 'none' || !todo.category) ? '未分類' : todo.category;
 

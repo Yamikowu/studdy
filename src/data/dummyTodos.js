@@ -81,10 +81,10 @@ export function ensureMealToday(todos) {
 
 export function getDummyTodos() {
   const base = [
-    { id: 1, title: '完成作業系統 Ch3 複習', category: 'hw', courseId: 1 },
-    { id: 2, title: '演算法作業 p.125', category: 'hw', courseId: 3 },
-    { id: 3, title: 'Quiz 2 - 網路概論', category: 'quiz', courseId: 1 },
-    { id: 4, title: '準備計算機概論小考', category: 'quiz', courseId: 2 },
+    { id: 1, title: 'LLM海報', category: 'hw', courseId: 3 },
+    { id: 2, title: '計概期末報告', category: 'hw', courseId: 1 ,time:'2025-12-11',deadline: '2025-12-11',allDay:true, deadlineAllDay: true},
+    { id: 3, title: '作業系統', category: 'quiz', courseId: 2 },
+    { id: 4, title: '計概小考', category: 'quiz', courseId: 1 },
     // 「吃飯」預設為今天的中午 12:00
     { id: 5, title: 'Lunch', category: null, time: todayAt('12:00'), duration: '60' },
   ];
