@@ -12,13 +12,29 @@ const todayAt = (time = '12:00') => {
 
 const getSkipLunchDate = () => {
   if (typeof window === 'undefined') return null;
-  return window.localStorage.getItem(SKIP_LUNCH_KEY);
+  const raw = window.localStorage.getItem(SKIP_LUNCH_KEY);
+  if (!raw) return null;
+
+  // 新格式: {"date": "...", "ts": 1717646400000}
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && parsed.date) {
+      return {
+        date: parsed.date,
+        ts: typeof parsed.ts === 'number' ? parsed.ts : null,
+      };
+    }
+  } catch (e) {
+    // 舊格式是純字串，後面會做保底處理
+  }
+  return { date: raw, ts: null };
 };
 
 export const setSkipLunchDate = (dateString) => {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(SKIP_LUNCH_KEY, dateString);
+    const payload = JSON.stringify({ date: dateString, ts: Date.now() });
+    window.localStorage.setItem(SKIP_LUNCH_KEY, payload);
   } catch (e) {
     console.error('Failed to set skip lunch date', e);
   }
@@ -38,11 +54,30 @@ const isSameDay = (date, todayKey) => date && date.toDateString() === todayKey;
 export function ensureMealToday(todos) {
   const safeTodos = Array.isArray(todos) ? todos : [];
   const todayKey = new Date().toDateString();
-  const skipDate = getSkipLunchDate();
+  const skipRecord = getSkipLunchDate();
+  let skipDate = skipRecord?.date || null;
+  let skipTimestamp = (typeof skipRecord?.ts === 'number') ? skipRecord.ts : null;
+  const now = Date.now();
+  const SKIP_EXPIRY_MS = 12 * 60 * 60 * 1000; // 12 小時失效
 
   // 若已經跨日，清掉舊的 skip 標記
   if (skipDate && skipDate !== todayKey) {
     clearSkipLunchDate();
+    skipDate = null;
+    skipTimestamp = null;
+  }
+
+  // 超過 12 小時，自動失效
+  if (skipTimestamp && now - skipTimestamp > SKIP_EXPIRY_MS) {
+    clearSkipLunchDate();
+    skipDate = null;
+    skipTimestamp = null;
+  }
+
+  // 舊格式（沒有 timestamp）的一律視為失效，避免長期看不到 Lunch
+  if (skipDate === todayKey && skipTimestamp === null) {
+    clearSkipLunchDate();
+    skipDate = null;
   }
 
   const mealIndex = safeTodos.findIndex(t => t.id === 5);
@@ -58,7 +93,12 @@ export function ensureMealToday(todos) {
   // 若沒有吃飯這筆，補上一筆今天的 12:00
   if (mealIndex === -1) {
     // 如果使用者今天手動完成/刪掉了 Lunch，就不要再自動補回來
-    if (skipDate && skipDate === todayKey) {
+    const skipStillValid =
+      skipDate === todayKey &&
+      skipTimestamp !== null &&
+      (now - skipTimestamp) < SKIP_EXPIRY_MS;
+
+    if (skipStillValid) {
       return safeTodos;
     }
 
